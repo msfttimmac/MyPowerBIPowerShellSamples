@@ -18,8 +18,8 @@
 Import-Module -Name PowerBIPS -Force
 
 ### Credential Information:
-$User = "admin@M365x960617.onmicrosoft.com"
-$PWord = ConvertTo-SecureString -String "6is2Gax6EK" -AsPlainText -Force
+$User = ""
+$PWord = ConvertTo-SecureString -String "" -AsPlainText -Force
 $UserCredential = New-Object -TypeName "System.Management.Automation.PSCredential" -ArgumentList $User, $PWord
 
 #This will prompt the user for credential

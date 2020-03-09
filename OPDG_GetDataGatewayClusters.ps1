@@ -10,12 +10,6 @@
 ### Credential Information:
 ### ---> Utilize the information to set the User and Password so you don't have to enter each time.
 ###### My Test Credentials
-####### Demo Credential Information
-###$User = "admin@M365x960617.onmicrosoft.com"
-###$PWord = ConvertTo-SecureString -String "6is2Gax6EK" -AsPlainText -Force
-####### Premium Capacity Information
-  $User = "WabiAdminTest@biatipdfmsitscus.onmicrosoft.com"
-  $PWord = ConvertTo-SecureString -String "sGusD5)349IbGr3z" -AsPlainText -Force
 ### $User = "<user upn to log in to the powerbi environment>"
 ### $PWord = ConvertTo-SecureString -String "<password>" -AsPlainText -Force
 ###############################################################################################

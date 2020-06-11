@@ -1,7 +1,10 @@
 # MyPowerBIPowerShellSamples
 Using the Get-PowerBIWorkspace PowerShell cmdlet to aquire information from workspaces.
 
-All scripts found here are illustrations.  There is a possibility that it will work, but you may have to make changes to adhere to your business rules and needs.
+**Disclaimer Note**
+All scripts found here are illustrations and have been based on my labs.  The overall concept of the script should work for you; however, you will most likely have to make small changes to adhere to the business rules for your specific business need.
+**Disclaimer Note**
+
 
 ## Datasets_GetDataset_DataSource_GWInfo
 **Script**: https://github.com/msfttimmac/MyPowerBIPowerShellSamples/blob/master/Datasets_GetDataset_DataSource_GWInfo
@@ -9,6 +12,8 @@ All scripts found here are illustrations.  There is a possibility that it will w
 **Required**: Power BI Admin Role and possibly Global Admin<br>
 **Purpose**:
 This has been designed with the intention to loop through all of the Power BI Workspaces and grab all of the dataset related information.  Additionally, it will take the Dataset ID to get the DataSoruce Information.  Inside of the DataSource Information is the Gateway ID.  I utilize the Gateway ID and the Gateway PowerShell cmdlets to get the Name of the Gateway Cluster.
+
+**NOTE**: This has been coded based on a single datasource to a single dataset.  If you have a scenario where there are multiple datasources to a single dataset, you will need to update/modify the code.
 
 **Rest API and PowerShell cmdlets involved here**
 * Admin - Datasets GetDatasourcesAsAdmin: https://docs.microsoft.com/en-us/rest/api/power-bi/admin/datasets_getdatasourcesasadmin

@@ -1,0 +1,108 @@
+###############################################################################################
+### GET_MYGATEWAYCLUSTERS
+### Documentation
+### -> Connect-DataGatewayServiceAccount: https://docs.microsoft.com/en-us/powershell/module/datagateway.profile/connect-datagatewayserviceaccount?view=datagateway-ps
+### -> Get-DataGatewayCluster: https://docs.microsoft.com/en-us/powershell/module/datagateway/get-datagatewaycluster?view=datagateway-ps
+### -> Get-DataGatewayClusterDataSource: https://docs.microsoft.com/en-us/powershell/module/datagateway/get-datagatewayclusterdatasource?view=datagateway-ps
+###############################################################################################
+###############################################################################################
+### Setting up some initial Environment Variables to use
+$TempFileLocation = 'C:\Temp\MyDataGatewayClusterList.csv'
+
+### AzureAD Powershell is not PowerShell 7 ready as of 4/2020 - so we have to use compatability.
+Import-Module -Name AzureAD -UseWindowsPowerShell
+Connect-AzureAD 
+
+###############################################################################################
+### Credential Information -> this is to help so you don't have to login each time.
+### --> However, the Connect-DataGatewayServiceAccount does not have a credential parameter to pass, so you will have to login each time you call the script.
+#$UserCredential = New-Object -TypeName "System.Management.Automation.PSCredential" -ArgumentList $User, $PWord
+#Login-PowerBIServiceAccount -Credential $UserCredential
+Connect-DataGatewayServiceAccount 
+###############################################################################################
+### Now let's get the cluster information
+$GetDataGatewayCluster = Get-DataGatewayCluster -Scope Organization
+$GetDataGatewayCluster | ForEach-Object{
+    $GetClusterStatus = ""
+    $GetClusterDataSource = ""
+    $GetClusterDataSourceString = ""
+    $GetClusterPermissionString =""
+    $Get_UserString = ""
+    $Get_ClusterDataSources =""
+
+    $OPDGCurrentObject = $_
+    $ClusterObject = New-Object psobject
+    [System.Guid]$ClusterID = $_.Id
+
+    $Get_gwType = $OPDGCurrentObject.Type
+    ### Description: If this is a Personal Gateway, Update the Description as such if the Description is blank
+    $Get_gwDescription = if($OPDGCurrentObject.Description -eq $null){ switch ($Get_gwType.tolower()){ 'personal' {'This is a Personal Gateway!'} default { $OPDGCurrentObject.Description } } }
+    $Get_gwMemberGateways = $OPDGCurrentObject.MemberGateways
+    $Get_gwMGAnnotations = $OPDGCurrentObject.MemberGateways.Annotation | ConvertFrom-Json
+    if( $OPDGCurrentObject.Status -eq $null -and $Get_gwType -eq 'Personal' ){$Get_gwStatus = $Get_gwMemberGateways.Status}
+    
+
+
+    $ClusterObject | Add-Member -MemberType NoteProperty -Name "Gateway Cluster ID" -Value $OPDGCurrentObject.Id
+    $ClusterObject | Add-Member -MemberType NoteProperty -Name "Gateway Cluster Name" -Value $OPDGCurrentObject.Name
+    $ClusterObject | Add-Member -MemberType NoteProperty -Name "Gateway Cluster GatewayMachine" -Value $Get_gwMGAnnotations.gatewayMachine
+    $ClusterObject | Add-Member -MemberType NoteProperty -Name "Gateway Cluster Type" -Value $Get_gwType
+    $ClusterObject | Add-Member -MemberType NoteProperty -Name "Gateway Cluster Version" -Value $Get_gwMGAnnotations.gatewayVersion
+    $ClusterObject | Add-Member -MemberType NoteProperty -Name "Gateway Cluster Description" -Value $Get_gwDescription
+
+    if(!($Get_gwType -eq 'Personal')){
+
+        $Get_gwClusterStatus = Get-DataGatewayClusterStatus -Scope Organization -GatewayClusterId $ClusterID -ErrorVariable $StatusError -ErrorAction SilentlyContinue
+        $Get_gwStatus = $Get_gwClusterStatus.ClusterStatus
+        $Get_gwCapabilities = $Get_gwClusterStatus.GatewayStaticCapabilities
+        $Get_gwVersion = $Get_gwClusterStatus.gatewayVersion
+        $Get_gwUpgradeState = $Get_gwClusterStatus.GatewayUpgradeState
+    }
+    else {
+        $Get_gwStatus = $Get_gwStatus
+    }
+
+    $ClusterObject | Add-Member -MemberType NoteProperty -Name "Gateway Cluster Status" -Value $Get_gwStatus
+    $ClusterObject | Add-Member -MemberType NoteProperty -Name "Gateway Cluster Capabilities" -Value $Get_gwCapabilities
+    $ClusterObject | Add-Member -MemberType NoteProperty -Name "Gateway Upgrade State" -Value $Get_gwUpgradeState
+    $ClusterObject | Add-Member -MemberType NoteProperty -Name "Gateway Cluster Region" -Value $OPDGCurrentObject.Region
+
+    $OPDGCurrentObject.Permissions | ForEach-Object{ 
+        if($_.PrincipalType -eq 'User'){
+            $Get_UserFromAzureAD = Get-AzureADUser -ObjectId $_.Id
+            $Get_UserString = $Get_UserFromAzureAD.DisplayName+" - ["+$Get_UserFromAzureAD.UserPrincipalName+", Department:"+$Get_UserFromAzureAD.Department+", ObjectId:"+$_.Id+"]"
+            $GetClusterPermissionString = $GetClusterPermissionString + '(' + $Get_UserSTring + '=Role:' + $_.Role + ':Type:' + $_.PrincipalType  + '); ' }}
+    $ClusterObject | Add-Member -MemberType NoteProperty -Name "Gateway Cluster Permissions" -Value $GetClusterPermissionString
+
+    if( !($Get_gwType -eq 'Personal')){
+            $Get_ClusterDataSources = Get-DataGatewayClusterDataSource -Scope Individual -GatewayClusterId $ClusterID
+            $Get_DataSourceCount = $Get_ClusterDataSources.Count
+            # Add to existing Cluster Object, but seperate the datasources
+            $Get_ClusterDataSources | ForEach-Object{
+                [System.Guid]$DataSourceID = $_.Id
+                $GetDataSourceStatus = Get-DataGatewayClusterDataSourceStatus -GatewayClusterId $ClusterId -GatewayClusterDatasourceId $DataSourceId  -ErrorVariable $GetError -ErrorAction SilentlyContinue 
+                $DsName = 'Datasource Name[Id]:' + $_.DatasourceName+'['+$DataSourceID+']'
+                $DsType = 'Datasource Type: ' + $_.DatasourceType
+                $DsConnectionDetails = 'Datasource Connection Details: ' + $_.ConnectionDetails
+                $DsCredType = 'Datasource Credential Type: ' + $_.CredentialType
+                
+                $GetClusterDataSourceString = "$GetClusterDataSourceString ( $DsName = $DsType - $DsConnectionDetails - $DsCredType  - DataSourceStatus: $GetDataSourceStatus   );`r`n"
+            }
+
+            $Get_DataSourceString =  $GetClusterDataSourceString
+        
+    }
+    else {
+        $Get_DataSourceCount = 0
+        $Get_DataSourceSTring = ""
+    }
+    $ClusterObject | Add-Member -MemberType NoteProperty -Name "Gateway Cluster Count of Datasources" -Value $Get_DataSourceCount
+    $ClusterObject | Add-Member -MemberType NoteProperty -Name "Gateway Cluster DataSourceIds" -Value $Get_DataSourceString
+    $ClusterObject | Add-Member -MemberType NoteProperty -Name "Gateway Cluster MemberGateways-ContactInformation-Count" -Value ($OPDGCurrentObject.MemberGateways.Annotation | ConvertFrom-Json).gatewayContactInformation.Count
+    $GetContactInformationString = ($OPDGCurrentObject.MemberGateways.Annotation | ConvertFrom-Json).gatewayContactInformation
+    $ClusterObject | Add-Member -MemberType NoteProperty -Name "Gateway Cluster ContactInformation" -Value ($GetContactInformationString | ConvertTo-Json).ToString()
+    $ClusterObject | Export-Csv $TempFileLocation -Append
+
+
+
+}

@@ -1,0 +1,128 @@
+
+#Logging in to the Power BI Service
+$User = ""
+$PWord = ConvertTo-SecureString -String "" -AsPlainText -Force
+$UserCredential = New-Object -TypeName "System.Management.Automation.PSCredential" -ArgumentList $User, $PWord
+
+### Login Information
+### You must be a Power BI Admin and Global Admin for this to gather all information
+### If you use the User Credential information above, you can automate most of the login process
+### The Login-DataGatewayServiceAccount does not support the automate of the login process  --- if you do not use this, you cannot run the Gateway Powershell within the script
+
+Login-PowerBIServiceAccount -Credential $UserCredential
+Login-DataGatewayServiceAccount ### this is to login to the data gateway
+
+
+### This script will loop through all workspaces and grab all dataset related information
+### It will take the dataset information and grab datasource information - this is generic/sample and I have coded as if there is a single datasource to a single dataset.  you may need to update code for multple datasources.
+### It will take the datasource information and grab the Gateway ID and the GatewayName using the Gateway PowerShell cmdlets.
+
+#GLOBAL VARIABLES - Just some variables for items 
+$GLOBAL_WorkspaceType = ""
+
+Function GetWorkspaceTypeInfo{
+    Param(
+        [string]$TheWorkspaceType
+    )
+    Process{
+        switch ($TheWorkspaceType.ToLower()) {
+            "workspace" { $GLOBAL_WorkspaceType =  $TheWorkspaceType + "(V2)"  }
+            "group" { $GLOBAL_WorkspaceType = $TheWorkspaceType + "(V1)"  }
+            "personalgroup" { $GLOBAL_WorkspaceType = $TheWorkspaceType + "(MyWorkspace)"  }
+            Default {}
+        }
+        return $GLOBAL_WorkspaceType
+    }
+}
+
+
+Function UpdateDataFile{
+    Param(
+        [psobject]$Get_UpdateDataObject
+    )
+    Process{
+        $Get_UpdateDataObject | Export-Csv 'c:\Temp\DatasetDump.CSV' -Append    
+    }
+}
+
+Write-Output "Obtaining List of Workspaces..."
+$GetWorkspaces = Get-PowerBIWorkspace -Scope Organization -All ##| Where-Object {$_.Type -ne 'PersonalGroup' -and $_.State -eq 'Active' }
+
+Write-Output "Looping through workspaces..."
+$GetWorkspaces | ForEach-Object{
+
+    #Build Out Some Workspace Variables to use
+    $Get_WorkspaceId = $_.Id
+    $Get_WorkspaceName = $_.Name
+    $Get_WorkspaceType = GetWorkspaceTypeInfo($_.Type)
+    $Get_DedicatedCapacity = $_.IsOnDedicatedCapacity
+    $Get_CapcityID = $_.CapacityId
+
+    #Obtain a list of objects in the workspace
+    ##$Get_ReportURL = "https://api.powerbi.com/v1.0/myorg/admin/groups/" + $Get_WorkspaceId + "/reports"
+    $Get_DatasetsURL = "https://api.powerbi.com/v1.0/myorg/admin/groups/" + $Get_WorkspaceId + "/datasets?$top=5"
+    Write-Output "Obtaining List of Datasets"
+    $Get_DataSetsInWorkSpace = Invoke-PowerBIRestMethod -Url $Get_DatasetsURL -Method Get
+    
+    Write-Output $daWName
+
+    foreach($ReportItem in $Get_DataSetsInWorkSpace)
+    {
+        $WorkSpaceObject = New-Object PSObject
+        # Power BI Workspace Information
+        $WorkSpaceObject | Add-Member -MemberType NoteProperty -Name "Workspace Name" -Value $Get_WorkspaceName
+        $WorkSpaceObject | Add-Member -MemberType NoteProperty -Name "Workspace ID" -Value $Get_WorkspaceId
+        $WorkSpaceObject | Add-Member -MemberType NoteProperty -Name "Workspace Type" -Value $Get_WorkspaceType
+        $WorkSpaceObject | Add-Member -MemberType NoteProperty -Name "Workspace On Dedicated" -Value $Get_DedicatedCapacity
+        $WorkSpaceObject | Add-Member -MemberType NoteProperty -Name "Capacity ID" -Value $Get_CapcityID
+        
+        $ReportItem_Names = ($ReportItem | ConvertFrom-Json).value
+
+        if($ReportItem_Names.Count -gt 1){
+            foreach($ItemName in $ReportItem_Names)
+            {
+                Write-Output "Processing Item: "+$ItemName.name
+
+                #Report Information                
+                $WorkSpaceObject | Add-Member -MemberType NoteProperty -Name "Dataset Name" -Value $ItemName.name -Force
+                $WorkSpaceObject | Add-Member -MemberType NoteProperty -Name "Dataset ID" -Value $ItemName.id -Force
+                $WorkSpaceObject | Add-Member -MemberType NoteProperty -Name "Dataset Configured By" -Value $ItemName.configuredby -Force
+                $WorkSpaceObject | Add-Member -MemberType NoteProperty -Name "Dataset Gateway Required" -Value $ItemName.IsOnPremGatewayRequired -Force
+                $WorkSpaceObject | Add-Member -MemberType NoteProperty -Name "Dataset Refreshable" -Value $ItemName.isRefreshable    -Force
+
+                $processingoutput = "Getting the Datasource and Gateway Information for Dataset: " & $ItemName.name
+                Write-Output $processingoutput
+                $Get_DatasourceURL = "https://api.powerbi.com/v1.0/myorg/admin/datasets/" + $ItemName.id + "/datasources"
+                $Get_DatasourceInfo = Invoke-PowerBIRestMethod -Url $Get_DatasourceURL -Method Get
+                $Get_GWID = (($Get_DatasourceInfo | ConvertFrom-Json).value).gatewayId
+                $Get_GWName = (Get-DataGatewayCluster -GatewayClusterId $Get_GWID).Name
+
+                $WorkSpaceObject | Add-Member -MemberType NoteProperty -Name "Gateway Id" -Value $Get_GWID    -Force
+                $WorkSpaceObject | Add-Member -MemberType NoteProperty -Name "Gateway Name" -Value $Get_GWName    -Force
+
+                UpdateDataFile($WorkSpaceObject)
+            }
+        }
+        else{
+
+            $WorkSpaceObject | Add-Member -MemberType NoteProperty -Name "Dataset Name" -Value $ReportItem_Names.name
+            $WorkSpaceObject | Add-Member -MemberType NoteProperty -Name "Dataset ID" -Value $ReportItem_Names.id
+            $WorkSpaceObject | Add-Member -MemberType NoteProperty -Name "Dataset Configured By" -Value $ReportItem_Names.configuredby
+            $WorkSpaceObject | Add-Member -MemberType NoteProperty -Name "Dataset Gateway Required" -Value $ReportItem_Names.IsOnPremGatewayRequired
+            $WorkSpaceObject | Add-Member -MemberType NoteProperty -Name "Dataset Refreshable" -Value $ReportItem_Names.isRefreshable
+                
+            $processingoutput = "Getting the Datasource and Gateway Information for Dataset: " & $ItemName.name
+            Write-Output $processingoutput
+            $Get_DatasourceURL = "https://api.powerbi.com/v1.0/myorg/admin/datasets/" + $ItemName.id + "/datasources"
+            $Get_DatasourceInfo = Invoke-PowerBIRestMethod -Url $Get_DatasourceURL -Method Get
+            $Get_GWID = (($Get_DatasourceInfo | ConvertFrom-Json).value).gatewayId
+            $Get_GWName = (Get-DataGatewayCluster -GatewayClusterId $Get_GWID).Name
+
+            $WorkSpaceObject | Add-Member -MemberType NoteProperty -Name "Gateway Id" -Value $Get_GWID    -Force
+            $WorkSpaceObject | Add-Member -MemberType NoteProperty -Name "Gateway Name" -Value $Get_GWName    -Force
+
+            UpdateDataFile($WorkSpaceObject)
+            
+        }
+    }
+    }

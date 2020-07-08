@@ -40,8 +40,8 @@ I am using the following Rest APIs with this script through the Invoke-PowerBIRe
 Now I am also using the Get-PowerBIWorkspace PowerShell cmdlet: https://docs.microsoft.com/en-us/powershell/module/microsoftpowerbimgmt.workspaces/get-powerbiworkspace?view=powerbi-ps.
 
 
-
-
+## CAPACITY SCRIPTS
+https://github.com/msfttimmac/MyPowerBIPowerShellSamples/blob/master/Capacity_Scripts/ListRefreshablesOnCapacity
 
 
 

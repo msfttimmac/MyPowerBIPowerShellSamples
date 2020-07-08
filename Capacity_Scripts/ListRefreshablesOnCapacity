@@ -1,0 +1,22 @@
+## This will loop through all capacities and get the refreshables which can have information such as details of the last refresh.
+
+
+Login-PowerBIServiceAccount
+function ListRefreshablesOnCapacity{
+    ## Lists all refreshables for capacity
+    $MyCapacityURL = "https://api.powerbi.com/v1.0/myorg/capacities"
+    $MyCapacities = Invoke-PowerBIRestMethod -Url $MyCapacityURL -Method Get | ConvertFrom-Json
+    $MyCapacities.value | ForEach-Object{ 
+        $CapacityObject = $_
+        $MyCapacityID = $_.Id 
+        $Get_CapacityURL = $MyCapacityURL + '/' + $MyCapacityID + '/refreshables?$top=10'
+        $MyCapacityRefreshables = Invoke-PowerBIRestMethod -Url $Get_CapacityURL -Method Get | ConvertFrom-Json
+        $MyCapacityRefreshables.value | ForEach-Object{
+            $MyObject = New-Object PSObject
+            $CapacityInfo = $CapacityObject.displayName + "( " + $CapacityObject.id + " )"
+            BuildRefreshableObject -TheCapcity $CapacityInfo -TheCapacityAdmins $CapacityObject.admins -TheCapacitySku $CapacityObject.sku -TheCapacitystate $CapacityObject.state -TheCapacityRegion $CapacityObject.region -TheId $_.id -TheName $_.name -TheKind $_.kind -TheLastRefresh $_.lastRefresh -TheRefreshSchedule $_.refreshSchedule -TheConfiguredBy $_.configuredBy
+            $MyObject | Export-Csv 'c:\Temp\CapacityRefreshablesDump.CSV' -Append
+        }
+    }
+    
+}

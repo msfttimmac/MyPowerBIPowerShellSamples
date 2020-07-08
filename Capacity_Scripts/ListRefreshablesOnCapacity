@@ -20,3 +20,32 @@ function ListRefreshablesOnCapacity{
     }
     
 }
+
+function BuildRefreshableObject{
+    PARAM(
+        [string]$TheCapcity,
+        [string]$TheCapacityAdmins,
+        [string]$TheCapacitySku,
+        [string]$TheCapacitystate,
+        [string]$TheCapacityRegion,
+        [string]$TheId,
+        [string]$TheName,
+        [string]$TheKind,
+        [string]$TheLastRefresh,
+        [string]$TheRefreshSchedule,
+        [string]$TheConfiguredBy
+    )
+    PROCESS{
+        $MyObject | Add-Member -MemberType NoteProperty -Name "Capacity Name (ID)" -Value $TheCapcity -Force
+        $MyObject | Add-Member -MemberType NoteProperty -Name "Capacity Admins" -Value $TheCapacityAdmins -Force
+        $MyObject | Add-Member -MemberType NoteProperty -Name "Capacity Sku" -Value $TheCapacitySku -Force
+        $MyObject | Add-Member -MemberType NoteProperty -Name "Capacity State" -Value $TheCapacitystate -Force
+        $MyObject | Add-Member -MemberType NoteProperty -Name "Capacity Region" -Value $TheCapacityRegion -Force
+        $MyObject | Add-Member -MemberType NoteProperty -Name "Object ID" -Value $TheId -Force
+        $MyObject | Add-Member -MemberType NoteProperty -Name "Object Name" -Value $TheName -Force
+        $MyObject | Add-Member -MemberType NoteProperty -Name "Object Kind" -Value $TheKind -Force
+        $MyObject | Add-Member -MemberType NoteProperty -Name "Object LastRefresh" -Value $TheLastRefresh -Force
+        $MyObject | Add-Member -MemberType NoteProperty -Name "Object RefreshSchedule" -Value $TheRefreshSchedule -Force
+        $MyObject | Add-Member -MemberType NoteProperty -Name "Object Configured By" -Value $TheConfiguredBy -Force
+    }
+}

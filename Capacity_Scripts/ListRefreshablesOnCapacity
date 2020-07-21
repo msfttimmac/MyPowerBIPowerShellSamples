@@ -49,3 +49,6 @@ function BuildRefreshableObject{
         $MyObject | Add-Member -MemberType NoteProperty -Name "Object Configured By" -Value $TheConfiguredBy -Force
     }
 }
+
+
+ListRefreshablesOnCapacity

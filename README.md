@@ -5,12 +5,22 @@ Using the Get-PowerBIWorkspace PowerShell cmdlet to aquire information from work
 All scripts found here are illustrations and have been based on my labs.  The overall concept of the script should work for you; however, you will most likely have to make small changes to adhere to the business rules for your specific business need.
 **Disclaimer Note**
 
+# Information on the different environments
+Working within the different environments, there are some small items that we need to be aware of here.  I am trying to list them out as I become aware of them.
+
 ## Login-PowerBIServiceAccount
 | Environment | Command |
 | --- | --- |
 | Government | Login-PowerBIServiceAccount -Environment USGOV |
 | Commercial | Login-PowerBIServiceAccount |
 | Using the Credential Parameter | Login-PowerBIServiceAccount -Credential $CredParam |
+
+## API
+| Environment | Command |
+| --- | --- |
+| Government | https://api.powerbigov.us |
+| Government High | https://api.high.powerbigov.us |
+| Commercial | https://api.powerbi.com |
 
 
 

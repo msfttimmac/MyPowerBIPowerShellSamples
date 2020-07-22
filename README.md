@@ -11,15 +11,17 @@ Working within the different environments, there are some small items that we ne
 ## Login-PowerBIServiceAccount
 | Environment | Command |
 | --- | --- |
-| Government | Login-PowerBIServiceAccount -Environment USGOV |
+| GCC | Login-PowerBIServiceAccount -Environment USGOV |
+| GCC HIGH | Login-PowerBIServiceAccount -Environment USGOVHIGH |
+| GCC MIL | Login-PowerBIServiceAccount -Environment USGOVMIL |
 | Commercial | Login-PowerBIServiceAccount |
 | Using the Credential Parameter | Login-PowerBIServiceAccount -Credential $CredParam |
 
 ## API
 | Environment | Command |
 | --- | --- |
-| Government | https://api.powerbigov.us |
-| Government High | https://api.high.powerbigov.us |
+| GCC | https://api.powerbigov.us |
+| GCC HIGH | https://api.high.powerbigov.us |
 | Commercial | https://api.powerbi.com |
 
 

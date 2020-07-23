@@ -60,8 +60,34 @@ I am using the following Rest APIs with this script through the Invoke-PowerBIRe
 Now I am also using the Get-PowerBIWorkspace PowerShell cmdlet: https://docs.microsoft.com/en-us/powershell/module/microsoftpowerbimgmt.workspaces/get-powerbiworkspace?view=powerbi-ps.
 
 
-## CAPACITY SCRIPTS
-https://github.com/msfttimmac/MyPowerBIPowerShellSamples/blob/master/Capacity_Scripts/ListRefreshablesOnCapacity
+# PREMIUM CAPACITY SCRIPTS
+## ListRefreshablesOnCapacity
+
+*Script*: https://github.com/msfttimmac/MyPowerBIPowerShellSamples/blob/master/Capacity_Scripts/ListRefreshablesOnCapacity
+
+| Column Reference | Description |
+| --- | --- |
+|Capacity Name	| The name of the capacity along with the capacity id |
+|Capacity Admins	|The listed admins of that capacity |
+|Capacity Sku	| The Sku (P1, P2, P3) |
+|Capacity State	| Is it Active or not |
+|Capacity Region	| The region the capacity is located |
+|Object ID	| The ID of the object - like a Dataset or Dataflow |
+|Object Name	| The name of the object |
+|Object Kind	| The kind of object (Dataset, Dataflow, Paginated Report) |
+|Object Last Refresh	| Long string holding information about the last refresh of the object |
+|Object Last Refresh Type | 	The Type of Refresh (Scheduled, On Demand, etc) |
+|Object Last Refresh StartTime | When the Last Refresh Started |
+|Object Last Refresh EndTime | When the Last Refresh Ended |
+|Object Last Refresh Status	| Completed, Failed, Disabled, etc |
+|Object Last Refresh Request ID | If the refresh fails and supplies a Request ID, it will be captured here |
+|Object Last Refresh Service Exception | If the refresh fails and supplies an exception, you will see it here |
+|Object Refresh Schedule	| Long string holding infromation about the schedule of refreshes |
+|Object Refresh Schedule Days | The Days the Refresh is scheduled (Monday, Tuesday, Wednesday, etc) |
+|Object Refresh Schedule Times | The Times the Refresh is scheduled |
+|Object Refresh Schedule localTimeZoneID | The Timezone for the Refresh Schedule |
+|Object Refresh Schedule NotifyOption | Notification of the Refresh |
+|Configured By	| Who configured the refresh (UPN) |
 
 
 

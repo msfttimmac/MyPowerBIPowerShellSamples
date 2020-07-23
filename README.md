@@ -90,5 +90,10 @@ Now I am also using the Get-PowerBIWorkspace PowerShell cmdlet: https://docs.mic
 |Configured By	| Who configured the refresh (UPN) |
 
 
+## Capacity_GetCapacities_Refreshables_AsAdmin
+**Script**: https://github.com/msfttimmac/MyPowerBIPowerShellSamples/blob/master/Capacity_Scripts/Capacity_GetCapacities_Refreshables_AsAdmin.ps1
+**Purpose**: The goal of the script is to help Power BI Admins and/or Office 365 Global Admins pull data about their capacities and the refreshes that are occurring on the capacities. This script will loop through all capacities on a Power BI Tenant and grab the information about the refreshables and the last refresh. 
+
+**Schema**: The schema is similar to above, but does have a few extra columns.  I will add that later on as time permits.
 
 

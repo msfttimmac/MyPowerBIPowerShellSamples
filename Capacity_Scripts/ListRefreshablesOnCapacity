@@ -1,7 +1,5 @@
 ## This will loop through all capacities and get the refreshables which can have information such as details of the last refresh.
 
-
-Login-PowerBIServiceAccount
 function ListRefreshablesOnCapacity{
     ## Lists all refreshables for capacity
     $MyCapacityURL = "https://api.powerbi.com/v1.0/myorg/capacities"
@@ -14,11 +12,19 @@ function ListRefreshablesOnCapacity{
         $MyCapacityRefreshables.value | ForEach-Object{
             $MyObject = New-Object PSObject
             $CapacityInfo = $CapacityObject.displayName + "( " + $CapacityObject.id + " )"
-            BuildRefreshableObject -TheCapcity $CapacityInfo -TheCapacityAdmins $CapacityObject.admins -TheCapacitySku $CapacityObject.sku -TheCapacitystate $CapacityObject.state -TheCapacityRegion $CapacityObject.region -TheId $_.id -TheName $_.name -TheKind $_.kind -TheLastRefresh $_.lastRefresh -TheRefreshSchedule $_.refreshSchedule -TheConfiguredBy $_.configuredBy
+
+            BuildRefreshableObject -TheCapcity $CapacityInfo -TheCapacityAdmins $CapacityObject.admins -TheCapacitySku $CapacityObject.sku `
+                -TheCapacitystate $CapacityObject.state -TheCapacityRegion $CapacityObject.region -TheId $_.id -TheName $_.name -TheKind $_.kind `
+                -TheLastRefresh $_.lastRefresh -TheLastRefreshType $_.lastRefresh.refreshType -TheLastRefreshStartTime $_.lastRefresh.startTime `
+                -TheLastRefreshEndTime $_.lastRefresh.endTime -TheLastRefreshStatus $_.lastRefresh.status -TheLastRefreshRequestID $_.lastRefresh.requestId `
+                -TheLastRefreshServiceException $_.lastRefresh.serviceExceptionJson `
+                -TheRefreshSchedule $_.refreshSchedule `
+                -TheRefreshScheduleDays $_.refreshSchedule.days -TheRefreshScheduleTimes $_.refreshSchedule.times `
+                -TheRefreshScheduleEnabled $_.refreshSchedule.enabled -TheRefreshSchedulelocalTimeZoneId $_.refreshSchedule.localTimeZoneId `
+                -TheRefreshScheduleNotifyOption $_.refreshSchedule.notifyOption -TheConfiguredBy $_.configuredBy
             $MyObject | Export-Csv 'c:\Temp\CapacityRefreshablesDump.CSV' -Append
         }
     }
-    
 }
 
 function BuildRefreshableObject{
@@ -32,7 +38,18 @@ function BuildRefreshableObject{
         [string]$TheName,
         [string]$TheKind,
         [string]$TheLastRefresh,
+        [string]$TheLastRefreshType,
+        [string]$TheLastRefreshStartTime,
+        [string]$TheLastRefreshEndTime,
+        [string]$TheLastRefreshStatus,
+        [string]$TheLastRefreshRequestID,
+        [string]$TheLastRefreshServiceException,
         [string]$TheRefreshSchedule,
+        [string]$TheRefreshScheduleDays,
+        [string]$TheRefreshScheduleTimes,
+        [string]$TheRefreshScheduleEnabled,
+        [string]$TheRefreshSchedulelocalTimeZoneId,
+        [string]$TheRefreshScheduleNotifyOption,
         [string]$TheConfiguredBy
     )
     PROCESS{
@@ -45,10 +62,33 @@ function BuildRefreshableObject{
         $MyObject | Add-Member -MemberType NoteProperty -Name "Object Name" -Value $TheName -Force
         $MyObject | Add-Member -MemberType NoteProperty -Name "Object Kind" -Value $TheKind -Force
         $MyObject | Add-Member -MemberType NoteProperty -Name "Object LastRefresh" -Value $TheLastRefresh -Force
+        $MyObject | Add-Member -MemberType NoteProperty -Name "Object LastRefresh Type" -Value $TheLastRefreshType -Force
+        $MyObject | Add-Member -MemberType NoteProperty -Name "Object LastRefresh StartTime" -Value $TheLastRefreshStartTime -Force
+        $MyObject | Add-Member -MemberType NoteProperty -Name "Object LastRefresh End Time" -Value $TheLastRefreshEndTime -Force
+        $MyObject | Add-Member -MemberType NoteProperty -Name "Object LastRefresh Status" -Value $TheLastRefreshStatus -Force
+        $MyObject | Add-Member -MemberType NoteProperty -Name "Object LastRefresh Request ID" -Value $TheLastRefreshRequestID -Force
+        $MyObject | Add-Member -MemberType NoteProperty -Name "Object LastRefresh Service Exception" -Value $TheLastRefreshServiceException -Force
         $MyObject | Add-Member -MemberType NoteProperty -Name "Object RefreshSchedule" -Value $TheRefreshSchedule -Force
+        $MyObject | Add-Member -MemberType NoteProperty -Name "Object RefreshSchedule Days" -Value $TheRefreshScheduleDays -Force
+        $MyObject | Add-Member -MemberType NoteProperty -Name "Object RefreshSchedule Times" -Value $TheRefreshScheduleTimes -Force
+        $MyObject | Add-Member -MemberType NoteProperty -Name "Object RefreshSchedule Enabled" -Value $TheRefreshScheduleEnabled -Force
+        $MyObject | Add-Member -MemberType NoteProperty -Name "Object RefreshSchedule localTimeZoneId" -Value $TheRefreshSchedulelocalTimeZoneId -Force
+        $MyObject | Add-Member -MemberType NoteProperty -Name "Object RefreshSchedule NotifyOption" -Value $TheRefreshScheduleNotifyOption -Force
         $MyObject | Add-Member -MemberType NoteProperty -Name "Object Configured By" -Value $TheConfiguredBy -Force
     }
 }
+
+
+$User = "<user upn>"
+$PWord = ConvertTo-SecureString -String "<user password>" -AsPlainText -Force
+$UserCredential = New-Object -TypeName "System.Management.Automation.PSCredential" -ArgumentList $User, $PWord
+
+#if commercial use this one
+#Login-PowerBIServiceAccount -Credential $UserCredential
+
+#if GCC, utilize this one
+#Login-PowerBIServiceAccount -Environment USGOV -Credential $UserCredential
+
 
 
 ListRefreshablesOnCapacity

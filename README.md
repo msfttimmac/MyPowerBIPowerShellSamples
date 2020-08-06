@@ -44,13 +44,18 @@ This has been designed with the intention to loop through all of the Power BI Wo
 <br><br><br><br>
 
 
-## Reports_Get_ReportsPerWorkspaceWithCreatedAndModified
-**Script**: https://github.com/msfttimmac/MyPowerBIPowerShellSamples/blob/master/Reports_Get_ReportsPerWorkspaceWithCreatedAndModified <br>
+## Reports_ReportInformation
+**Script**: https://github.com/msfttimmac/MyPowerBIPowerShellSamples/blob/master/ReportScripts/Get_ReportInformation <br>
 **Required**: Power BI Admin Role and possibly Global Admin<br>
 **Purpose**:
 Loops through all workspaces and lists out all reports with 
  - the created date/time and the modified date/time
- - the user (currently only supplies the user object id - you can use the objectid and the Azure AD modules to pull the actual user info)
+ - the user: (Read Note Below)
+ 
+ | NOTE | Currently, this script only supplies the ObjectID of the user object that created the Power BI Report.  If you desire to know more about the User in the Created BY, you will need to build more to the script utilizing the Azure AD PowerShell Modules |
+ | --- | --- |
+ 
+ 
 This does dump to a CSV file in the C:\Temp Directory, so you will need to ensure that you have the C:\Temp directory
 It adds each record through the loop via Append.
 

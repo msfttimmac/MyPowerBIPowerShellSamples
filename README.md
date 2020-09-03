@@ -1,9 +1,11 @@
 # MyPowerBIPowerShellSamples
 Using the Get-PowerBIWorkspace PowerShell cmdlet to aquire information from workspaces.
 
-**Disclaimer Note**
-All scripts found here are illustrations and have been based on my labs.  The overall concept of the script should work for you; however, you will most likely have to make small changes to adhere to the business rules for your specific business need.
-**Disclaimer Note**
+
+| **Disclaimer Note** |
+| --- |
+| All scripts found here are illustrations and have been based on my labs.  The overall concept of the script should work for you; however, you will most likely have to make small changes to adhere to the business rules for your specific business need. |
+| **Disclaimer Note** |
 
 # Information on the different environments
 Working within the different environments, there are some small items that we need to be aware of here.  I am trying to list them out as I become aware of them.
@@ -41,11 +43,11 @@ If you need to test a Rest API and in the Government Space then you will need to
 
 I did not write a script for this one, this is just an illustration of how to execute this in the different environments.  I hope that this helps you.
 
-| Environment | Command |
+| **Environment** | **Command** |
 | --- | --- |
-| GCC |  Invoke-PowerBIRestMethod -Url "https://api.powerbigov.us/v1.0/myorg/datasets/<datasetid>/refreshes" -Method Post  -Body '{"notifyOption": "MailOnFailure"}' |
-| GCC HIGH | Invoke-PowerBIRestMethod -Url "https://api.high.powerbigov.us/v1.0/myorg/datasets/<datasetid>/refreshes" -Method Post  -Body '{"notifyOption": "MailOnFailure"}'|
-| Commercial |  Invoke-PowerBIRestMethod -Url "https://api.powerbi.com/v1.0/myorg/datasets/<datasetid>/refreshes" -Method Post  -Body '{"notifyOption": "MailOnFailure"}' |
+| GCC |  Invoke-PowerBIRestMethod -Url "https://api.powerbigov.us/v1.0/myorg/datasets/{enter the datasetid}/refreshes" -Method Post  -Body '{"notifyOption": "MailOnFailure"}' |
+| GCC HIGH | Invoke-PowerBIRestMethod -Url "https://api.high.powerbigov.us/v1.0/myorg/datasets/{enter the datasetid}/refreshes" -Method Post  -Body '{"notifyOption": "MailOnFailure"}'|
+| Commercial |  Invoke-PowerBIRestMethod -Url "https://api.powerbi.com/v1.0/myorg/datasets/{enter the datasetid}/refreshes" -Method Post  -Body '{"notifyOption": "MailOnFailure"}' |
 
 
 ## Datasets_GetDataset_DataSource_GWInfo

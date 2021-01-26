@@ -7,6 +7,12 @@ Using the Get-PowerBIWorkspace PowerShell cmdlet to aquire information from work
 | All scripts found here are illustrations and have been based on my labs.  The overall concept of the script should work for you; however, you will most likely have to make small changes to adhere to the business rules for your specific business need. |
 | **Disclaimer Note** |
 
+# General Documentation: On-Premise Data Gateway PowerShell
+- On-Premise Data Gateway Management via PowerShell Blog: https://powerbi.microsoft.com/en-us/blog/on-premises-data-gateway-management-via-powershell-public-preview/
+- Microsoft Documentation: https://docs.microsoft.com/en-us/data-integration/gateway/service-gateway-powershell-support
+
+
+
 # Information on the different environments
 Working within the different environments, there are some small items that we need to be aware of here.  I am trying to list them out as I become aware of them.
 

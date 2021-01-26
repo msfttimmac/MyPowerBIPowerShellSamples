@@ -8,8 +8,8 @@ Using the Get-PowerBIWorkspace PowerShell cmdlet to aquire information from work
 | **Disclaimer Note** |
 
 # General Documentation: On-Premise Data Gateway PowerShell
-- On-Premise Data Gateway Management via PowerShell Blog: https://powerbi.microsoft.com/en-us/blog/on-premises-data-gateway-management-via-powershell-public-preview/
-- Microsoft Documentation: https://docs.microsoft.com/en-us/data-integration/gateway/service-gateway-powershell-support
+- [On-Premise Data Gateway Management via PowerShell Blog:]( https://powerbi.microsoft.com/en-us/blog/on-premises-data-gateway-management-via-powershell-public-preview/)
+- [Microsoft Documentation:] (https://docs.microsoft.com/en-us/data-integration/gateway/service-gateway-powershell-support)
 
 
 

@@ -16,19 +16,19 @@ $GetGWStatus
 
 try{   
     $GetGWStatus = Get-DataGatewayClusterDatasourceStatus -GatewayClusterId $ClusterID -GatewayClusterDatasourceId $DataSourceID -ErrorAction SilentlyContinue
- } 
-finally{
- if($GetGWStatus -eq "")
-    {
-        $GetGWStatus = Resolve-PowerBIError -Last     
-    }   
-}
+ }<br>
+finally{<br>
+    if($GetGWStatus -eq "")
+    {<br>
+        $GetGWStatus = Resolve-PowerBIError -Last     <br>
+    }   <br>
+}<br>
 
-$GetGWStatus
+$GetGWStatus<br>
 
-Disconnect-DataGatewayServiceAccount
-Disconnect-PowerBIServiceAccount
-Exit-PSSession
+Disconnect-DataGatewayServiceAccount<br>
+Disconnect-PowerBIServiceAccount<br>
+Exit-PSSession<br>
 
 ## DOCUMENTATION
   [Get-DataGatewayClusterDatasourceStatus](https://docs.microsoft.com/en-us/powershell/module/datagateway/get-datagatewayclusterdatasourcestatus?view=datagateway-ps)

@@ -2,6 +2,7 @@
 # AddUserToWorkspace Script
 ## Script Purpose
 The purpose of this script is to allow for someone to pass several workspaces, a single email address and permissions for this email to update the permissions to the workspace.
+Script: https://github.com/msfttimmac/MyPowerBIPowerShellSamples/blob/master/WorkspaceScripting/AddUserToWorkspace.ps1
 
 ## DISCLAIMER
 This is nothing more than a sample illustration to illustrate how someone could update more than one workspace permissions using PowerShell and Rest API.

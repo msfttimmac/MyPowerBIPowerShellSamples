@@ -1,3 +1,5 @@
+
+# AddUserToWorkspace Script
 ## Script Purpose
 The purpose of this script is to allow for someone to pass several workspaces, a single email address and permissions for this email to update the permissions to the workspace.
 

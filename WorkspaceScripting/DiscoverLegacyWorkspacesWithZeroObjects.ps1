@@ -2,7 +2,7 @@
 #### CAUTION - CAUTION - CAUTION - CAUTION - CAUTION - CAUTION - CAUTION - CAUTION ###
 #### This script is designed to find Power BI V1 (Legacy) Workspaces with 0 objects in them.  
 #### If you find workspaces, you can use the Delete Groups Rest API to delete the workspace: https://docs.microsoft.com/en-us/rest/api/power-bi/groups/delete-group
-
+#### Remember, this is a sample illustration to illustrate how this is done! 
 
 $UserObect = ""
 $pwdstring = ""

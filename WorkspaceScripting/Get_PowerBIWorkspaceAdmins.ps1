@@ -1,7 +1,5 @@
 
-#$UserObect = "WabiTestAdmin@tipstaginguseast.onmicrosoft.com"
-#$pwdstring = "EsU6\$" + "MM"
-#$UserPass = ConvertTo-SecureString -String $pwdstring -AsPlainText -Force
+
 
 $UserObect = ""
 $pwdstring = ""

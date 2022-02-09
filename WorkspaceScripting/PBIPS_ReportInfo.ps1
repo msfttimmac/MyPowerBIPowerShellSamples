@@ -1,8 +1,4 @@
 
-$UserObject = "admin@M365x229178.onmicrosoft.com"
-$pwdstring = "62Lu9iVEdB"
-$UserPass = ConvertTo-SecureString -String $pwdstring -AsPlainText -Force
-
 #$UserObect = ""
 #$pwdstring = ""
 #$UserPass = ConvertTo-SecureString -String $pwdstring -AsPlainText -Force
